@@ -6,6 +6,7 @@ import time
 
 from paste.request import get_cookies
 from paste.auth import auth_tkt
+from django.conf import settings
 
 _NOW_TESTING = None  # unit tests can replace
 def _now():  #pragma NO COVERAGE
@@ -175,7 +176,9 @@ class AuthTktCookiePlugin(object):
             ('Set-Cookie', '%s="%s"; Path=/; Domain=%s%s%s' % (
             self.cookie_name, value, cur_domain, max_age, secure)),
             ('Set-Cookie', '%s="%s"; Path=/; Domain=%s%s%s' % (
-            self.cookie_name, value, wild_domain, max_age, secure))
+            self.cookie_name, value, wild_domain, max_age, secure)),
+            ('Set-Cookie', '%s="%s"; Path=/; Domain=%s%s%s' % (
+            self.cookie_name, value, settings.SESSION_COOKIE_DOMAIN, max_age, secure))
             ]
         return cookies
 

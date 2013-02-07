@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth import login
-from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -33,7 +32,7 @@ class AuthTktMiddleware(object):
                                  **getattr(settings, 'AUTHTKT_OPTIONS', {}))
     callback = staticmethod(resolve(getattr(settings,
                                             'AUTHTKT_CALLBACK', None)))
-    cookie_type = {'domain': 1, 'subdomain': 2}.get(
+    cookie_type = {'domain': 1, 'subdomain': 2, "session_domain": 3}.get(
                             getattr(settings, 'AUTHTKT_DOMAIN', 0), 0)
 
     def identify(self, request, response):
