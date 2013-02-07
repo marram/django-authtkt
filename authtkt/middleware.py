@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from authtkt.auth_tkt import AuthTktCookiePlugin
 import logging
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 
 log = logging.getLogger(__name__)
 
@@ -79,4 +80,15 @@ class AuthTktMiddleware(object):
             elif not is_anon and \
                  self.plugin.cookie_name not in request.COOKIES:
                 self.identify(request, response)
+        return response
+
+class RedirectAfterAuthMiddleware(object):
+    """ The mod_auth_tkt apache module redirects to the login url with a ?back=sso_app_url.
+        So this redirects back to the app requesting authentication.
+    """
+    def process_response(self, request, response):
+        # Only redirect if the user is already authenticated.
+        if request.user:
+            if request.REQUEST.get("back", None):
+                return HttpResponseRedirect(request.REQUEST.get("back"))
         return response
