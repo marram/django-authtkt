@@ -88,7 +88,7 @@ class RedirectAfterAuthMiddleware(object):
     """
     def process_response(self, request, response):
         # Only redirect if the user is already authenticated.
-        if request.user:
+        if request.user.is_authenticated():
             if request.REQUEST.get("back", None):
                 return HttpResponseRedirect(request.REQUEST.get("back"))
         return response
